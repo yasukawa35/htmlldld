@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTMLダウンローダー</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        .item-group {
+            margin-bottom: 10px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid #000;
+            resize: vertical;
+        }
+        input[type="text"] {
+            padding: 5px;
+            border: 1px solid #000;
+            margin-right: 5px;
+        }
+        button {
+            padding: 10px;
+            background-color: #000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>HTMLコードダウンローダー</h1>
+    
+    <!-- 1. コード入力エリア -->
+    <div class="item-group">
+        <label for="code-input">1. HTMLコードを入力:</label>
+        <textarea id="code-input" 
+                  placeholder="<!DOCTYPE html>
+<html>
+<body>
+    <p>コードを入力してください。</p>
+</body>
+</html>"></textarea>
+    </div>
+
+    <!-- 2. ファイル名入力 -->
+    <div class="item-group">
+        <label for="file-name">2. ファイル名:</label>
+        <input type="text" id="file-name" value="group0" style="width: 150px;">
+        <span>.html</span>
+    </div>
+
+    <!-- 3. ダウンロードボタン -->
+    <button onclick="downloadHtmlFile()">
+        3. ダウンロード
+    </button>
+
+    <script>
+        // このJavaScriptは、入力されたテキストをファイルとしてダウンロードするために必要です。
+
+        function downloadHtmlFile() {
+            const codeInput = document.getElementById('code-input');
+            const fileNameInput = document.getElementById('file-name');
+            
+            const code = codeInput.value;
+            let fileName = fileNameInput.value.trim() || 'index';
+            
+            if (!code.trim()) {
+                // コードが空の場合は何もしない
+                return;
+            }
+
+            // ファイル名に.html拡張子を追加
+            if (!fileName.toLowerCase().endsWith('.html')) {
+                fileName += '.html';
+            }
+
+            // ダウンロード処理
+            const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            
+            document.body.appendChild(a);
+            
+            // リンクのクリックを実行
+            a.click();
+
+            // iOS/iPadOS環境でダウンロードを確実に行うため、要素の削除を遅らせる
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 50); // 50ミリ秒の遅延により、ブラウザがダウンロード処理を開始する時間を確保
+        }
+    </script>
+</body>
+</html>
